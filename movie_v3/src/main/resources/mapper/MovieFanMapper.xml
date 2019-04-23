@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.shotacon.movie.api.moviefan.mapper.MovieFanMapper">
+
+	<insert id="insertLocationBatch" parameterType="java.util.List">
+		<selectKey resultType="java.lang.Integer" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO tihe_moviefan_location (
+		location_id,
+		parent_id,
+		location_type,
+		name_cn,
+		name_en,
+		name_pinyin,
+		name_pinyin_short,
+		name_code,
+		is_hot,
+		latitude,
+		longitude
+		) VALUES
+		<foreach collection="list" item="locationEntity" index="index"
+			separator=",">
+			(
+			#{locationEntity.locationID},
+			#{locationEntity.parentID},
+			#{locationEntity.locationType},
+			#{locationEntity.nameCN},
+			#{locationEntity.nameEN},
+			upper(#{locationEntity.namePinyin}),
+			upper(#{locationEntity.namePinyinShort}),
+			#{locationEntity.nameCode},
+			#{locationEntity.isHot},
+			#{locationEntity.latitude},
+			#{locationEntity.longitude}
+			)
+		</foreach>
+	</insert>
+
+	<insert id="insertCinemaBatch" parameterType="java.util.List">
+		<selectKey resultType="java.lang.Integer" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO tihe_moviefan_cinema (
+		baidu_latitude,
+		baidu_longitude,
+		cinema_address,
+		cinema_id,
+		cinema_name,
+		cinema_status,
+		city,
+		county,
+		description,
+		phone,
+		province
+		) VALUES
+		<foreach collection="list" item="cinemaEntity" index="index"
+			separator=",">
+			(
+			#{cinemaEntity.baiduLatitude},
+			#{cinemaEntity.baiduLongitude},
+			#{cinemaEntity.cinemaAddress},
+			#{cinemaEntity.cinemaID},
+			#{cinemaEntity.cinemaName},
+			#{cinemaEntity.cinemaStatus},
+			#{cinemaEntity.city},
+			#{cinemaEntity.county},
+			#{cinemaEntity.desc},
+			#{cinemaEntity.phone},
+			#{cinemaEntity.province}
+			)
+		</foreach>
+	</insert>
+
+	<insert id="insertMovieBatch" parameterType="java.util.List">
+		<selectKey resultType="java.lang.Integer" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO tihe_moviefan_movie (
+		actors,
+		director,
+		film_length,
+		intro,
+		movie_id,
+		movie_image,
+		movie_lanages,
+		movie_name_cn,
+		movie_name_en,
+		movie_types,
+		movie_versions,
+		release_time
+		) VALUES
+		<foreach collection="list" item="movieEntity" index="index"
+			separator=",">
+			(
+			#{movieEntity.actors},
+			#{movieEntity.director},
+			#{movieEntity.filmLength},
+			#{movieEntity.intro},
+			#{movieEntity.movieID},
+			#{movieEntity.movieImage},
+			#{movieEntity.movieLanages},
+			#{movieEntity.movieNameCN},
+			#{movieEntity.movieNameEN},
+			#{movieEntity.movieTypes},
+			#{movieEntity.movieVersions},
+			#{movieEntity.releaseTime}
+			)
+		</foreach>
+	</insert>
+
+	<insert id="insertHallBatch" parameterType="java.util.List">
+		<selectKey resultType="java.lang.Integer" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO tihe_moviefan_hall (
+		alias,
+		cinema_id,
+		hall_id,
+		hall_name,
+		hall_status,
+		hall_type,
+		intro,
+		seat_count
+		) VALUES
+		<foreach collection="list" item="hallEntity" index="index"
+			separator=",">
+			(
+			#{hallEntity.alias},
+			#{hallEntity.cinemaID},
+			#{hallEntity.hallID},
+			#{hallEntity.hallName},
+			#{hallEntity.hallStatus},
+			#{hallEntity.hallType},
+			#{hallEntity.intro},
+			#{hallEntity.seatCount}
+			)
+		</foreach>
+	</insert>
+
+	<insert id="insertShowBatch" parameterType="java.util.List">
+		<selectKey resultType="java.lang.Integer" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO tihe_moviefan_shows (
+		cinema_id,
+		hall_id,
+		language,
+		movie_id,
+		price,
+		show_time,
+		showtime_id,
+		status,
+		ticket_end_time,
+		ticket_start_time,
+		version,
+		film_length,
+		retail_price,
+		hall_name
+		) VALUES
+		<foreach collection="list" item="ShowsEntity" index="index"
+			separator=",">
+			(
+			#{ShowsEntity.cinemaID},
+			#{ShowsEntity.hallID},
+			#{ShowsEntity.language},
+			#{ShowsEntity.movieID},
+			#{ShowsEntity.price},
+			#{ShowsEntity.showTime},
+			#{ShowsEntity.showtimeID},
+			#{ShowsEntity.status},
+			#{ShowsEntity.ticketEndTime},
+			#{ShowsEntity.ticketStartTime},
+			#{ShowsEntity.version},
+			#{ShowsEntity.filmLength},
+			#{ShowsEntity.retailPrice},
+			#{ShowsEntity.hallName}
+			)
+		</foreach>
+	</insert>
+
+	<update id="updateShows" parameterType="com.shotacon.movie.api.moviefan.entity.ShowsEntity">
+	UPDATE
+		tihe_moviefan_shows
+	SET
+		cinema_id           = #{cinemaID},
+		hall_id             = #{hallID},
+		language            = #{language},
+		movie_id            = #{movieID},
+		price 			    = #{price},
+		show_time 			= #{showTime},
+		status 				= #{status},
+		ticket_end_time     = #{ticketEndTime},
+		ticket_start_time   = #{ticketStartTime},
+		version 			= #{version},
+		film_length 		= #{filmLength},
+		retail_price 		= #{retailPrice},
+		hall_name 			= #{hallName}
+	WHERE
+		showtime_id 		= #{showtimeID}
+	</update>
+
+	<insert id="insertOrder" parameterType="com.shotacon.movie.api.moviefan.entity.OrderEntity">
+		<selectKey resultType="java.lang.Integer" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO tihe_moviefan_order (
+		returned_order_status ,
+		take_ticket_position ,
+		amount ,
+		cinema_address ,
+		cinema_name ,
+		cinema_ticket_code ,
+		create_time ,
+		end_time ,
+		external_order_status ,
+		hall_name ,
+		movie_name ,
+		orderexternal_id ,
+		pay_state ,
+		print_code ,
+		quantity ,
+		seat_name ,
+		start_time ,
+		verify_code ,
+		qr_code
+		) VALUES
+		(
+			#{ReturnedOrderStatus},
+			#{TakeTicketPosition},
+			#{amount},
+			#{cinemaAddress},
+			#{cinemaName},
+			#{cinemaTicketCode},
+			#{createTime},
+			#{endTime},
+			#{externalOrderStatus},
+			#{hallName},
+			#{movieName},
+			#{orderExternalID},
+			#{payState},
+			#{printCode},
+			#{quantity},
+			#{seatName},
+			#{startTime},
+			#{verifyCode},
+			#{qrCode}
+
+		)
+	</insert>
+	
+	
+	<update id="updateOrder" parameterType="com.shotacon.movie.api.moviefan.entity.OrderEntity">
+		UPDATE 
+			tihe_moviefan_order 
+		SET
+			returned_order_status    =			#{ReturnedOrderStatus},
+			take_ticket_position     =			#{TakeTicketPosition},
+			amount                   =			#{amount},
+			cinema_address           =			#{cinemaAddress},
+			cinema_name              =			#{cinemaName},
+			cinema_ticket_code       =			#{cinemaTicketCode},
+			create_time              =			#{createTime},
+			end_time                 =			#{endTime},
+			external_order_status    =			#{externalOrderStatus},
+			hall_name                =			#{hallName},
+			movie_name               =			#{movieName},
+			pay_state                =			#{payState},
+			print_code               =			#{printCode},
+			quantity                 =			#{quantity},
+			seat_name                =			#{seatName},
+			start_time               =			#{startTime},
+			verify_code              =			#{verifyCode},
+			qr_code					 = 			#{qrCode}
+		WHERE 
+			orderexternal_id         =       	#{orderExternalID};
+	</update>
+</mapper>
